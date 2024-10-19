@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getAllPcParts, createCustomItem, deletePartFromCustomItem, updatePartInCustomItem } from './services/CustomItemsAPI';
+import Toast from './components/toast';
 
 interface Part {
     name: string;
@@ -34,6 +35,7 @@ const App: React.FC = () => {
     const [customBuilds, setCustomBuilds] = useState<CustomBuild[]>([]);
     const [selectedBuildId, setSelectedBuildId] = useState<number | null>(null);
     const [partToUpdate, setPartToUpdate] = useState<{ buildId: number; partType: string } | null>(null);
+    const [toastMessage, setToastMessage] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchPcParts = async () => {
@@ -54,7 +56,24 @@ const App: React.FC = () => {
         setTotalPrice(totalPrice + part.price);
     };
 
+    const removeFromCart = (index: number) => {
+        const part = cart[index];
+        setCart(cart.filter((_, i) => i !== index));
+        setTotalPrice(totalPrice - part.price);
+    };
+
+    const validateBuild = () => {
+        const partTypes = cart.map(part => part.type);
+        const uniquePartTypes = new Set(partTypes);
+        return partTypes.length === uniquePartTypes.size;
+    };
+
     const createBuild = async () => {
+        if (!validateBuild()) {
+            setToastMessage('You cannot have two items from the same part type.');
+            return;
+        }
+
         const cpu = cart.find(part => part.type === 'cpu');
         const gpu = cart.find(part => part.type === 'gpu');
         const motherboard = cart.find(part => part.type === 'motherboard');
@@ -73,9 +92,10 @@ const App: React.FC = () => {
         console.log('Cooling found:', cooling);
         console.log('OS found:', os);
 
-        const customItem: CustomBuild = {
+        const customItem = {
             id: Date.now(),
             name: customBuildName,
+            price: totalPrice,
             cpu: cpu ? cpu.name : null,
             gpu: gpu ? gpu.name : null,
             motherboard: motherboard ? motherboard.name : null,
@@ -143,6 +163,9 @@ const App: React.FC = () => {
                     {cart.map((part, index) => (
                         <li key={index} className="flex justify-between items-center">
                             {part.name} - ${part.price}
+                            <button onClick={() => removeFromCart(index)} className="ml-4 px-2 py-1 bg-red-500 text-white rounded hover:bg-red-700">
+                                Remove
+                            </button>
                         </li>
                     ))}
                 </ul>
@@ -179,7 +202,7 @@ const App: React.FC = () => {
             <section>
                 <h2 className="text-2xl font-semibold mb-4">My Builds</h2>
                 {customBuilds.length === 0 ? (
-                    <p>You don't have any Builds. Get to building!</p>
+                    <p>You don't have any builds. Get to building!</p>
                 ) : (
                     customBuilds.map((build) => (
                         <div key={build.id} className="mb-4">
@@ -232,6 +255,9 @@ const App: React.FC = () => {
                         </ul>
                     </div>
                 </div>
+            )}
+            {toastMessage && (
+                <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
             )}
         </div>
     );
