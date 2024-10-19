@@ -1,5 +1,5 @@
 import express from 'express';
-import { getAllPcParts } from '../controllers/pcPartsController.ts';
+import { getAllPcParts } from '../controllers/pcPartsController';
 
 const router = express.Router();
 

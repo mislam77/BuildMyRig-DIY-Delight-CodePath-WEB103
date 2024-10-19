@@ -1,9 +1,11 @@
 import express from 'express';
-import customItemsRoutes from './routes/customItemsRoutes.ts';
-import pcPartsRoutes from './routes/pcPartsRoutes.ts';
+import cors from 'cors';
+import customItemsRoutes from './routes/customItemsRoutes';
+import pcPartsRoutes from './routes/pcPartsRoutes';
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 app.use('/api', customItemsRoutes);
 app.use('/api', pcPartsRoutes);

@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getPcParts } from '../services/pcparts-api.ts';
+import { getPcParts } from '../services/pcparts-api';
 
 export const getAllPcParts = (req: Request, res: Response) => {
     try {

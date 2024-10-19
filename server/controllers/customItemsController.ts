@@ -1,4 +1,4 @@
-import { pool } from '../config/database.ts';
+import { pool } from '../config/database';
 import { Request, Response } from 'express';
 
 export const getCustomItems = async (req: Request, res: Response) => {
