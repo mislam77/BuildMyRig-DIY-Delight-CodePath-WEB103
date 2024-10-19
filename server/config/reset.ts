@@ -8,14 +8,15 @@ const resetDatabase = async () => {
         await pool.query(`
             CREATE TABLE CustomItem (
                 id SERIAL PRIMARY KEY,
-                cpu JSONB NOT NULL,
-                gpu JSONB NOT NULL,
-                motherboard JSONB NOT NULL,
-                ram JSONB NOT NULL,
-                storage JSONB NOT NULL,
-                psu JSONB NOT NULL,
-                cooling JSONB NOT NULL,
-                os JSONB NOT NULL,
+                name VARCHAR(255) NOT NULL,
+                cpu VARCHAR(255),
+                gpu VARCHAR(255),
+                motherboard VARCHAR(255),
+                ram VARCHAR(255),
+                storage VARCHAR(255),
+                psu VARCHAR(255),
+                cooling VARCHAR(255),
+                os VARCHAR(255),
                 total_price DECIMAL(10, 2) NOT NULL
             )
         `);
