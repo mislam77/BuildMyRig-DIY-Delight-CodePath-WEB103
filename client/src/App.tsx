@@ -74,7 +74,7 @@ const App: React.FC = () => {
         console.log('OS found:', os);
 
         const customItem: CustomBuild = {
-            id: customBuilds.length ? customBuilds[customBuilds.length - 1].id + 1 : 1,
+            id: Date.now(),
             name: customBuildName,
             cpu: cpu ? cpu.name : null,
             gpu: gpu ? gpu.name : null,
@@ -125,10 +125,10 @@ const App: React.FC = () => {
     };
 
     return (
-        <div className="container mx-auto p-4">
+        <div className="bg-gray-900 text-white min-h-screen p-4">
             <header className="text-center mb-8">
                 <h1 className="text-4xl font-bold">BuildMyRig</h1>
-                <p className="text-lg text-gray-600">Customize your PC with the best parts available.</p>
+                <p className="text-lg text-gray-400">Customize your PC with the best parts available.</p>
             </header>
             <section className="mb-8">
                 <h2 className="text-2xl font-semibold mb-4">Cart</h2>
@@ -137,7 +137,7 @@ const App: React.FC = () => {
                     value={customBuildName}
                     onChange={(e) => setCustomBuildName(e.target.value)}
                     placeholder="Enter custom build name"
-                    className="mb-4 p-2 border border-gray-300 rounded"
+                    className="mb-4 p-2 border border-gray-300 rounded text-black"
                 />
                 <ul className="list-disc pl-5 mb-4">
                     {cart.map((part, index) => (
@@ -178,40 +178,44 @@ const App: React.FC = () => {
             </section>
             <section>
                 <h2 className="text-2xl font-semibold mb-4">My Builds</h2>
-                {customBuilds.map((build) => (
-                    <div key={build.id} className="mb-4">
-                        <h3
-                            onClick={() => toggleBuildDetails(build.id)}
-                            className="text-xl font-semibold cursor-pointer text-blue-500"
-                        >
-                            {build.name}
-                        </h3>
-                        {selectedBuildId === build.id && (
-                            <div className="grid grid-cols-3 gap-4 items-center">
-                                <div className="font-bold">Part</div>
-                                <div className="font-bold">Delete</div>
-                                <div className="font-bold">Update</div>
-                                {Object.entries(build).map(([partType, partName]) => (
-                                    partType !== 'id' && partType !== 'name' && partType !== 'total_price' && partName && (
-                                        <React.Fragment key={partType}>
-                                            <div>{partType}: {partName}</div>
-                                            <button onClick={() => deletePartFromBuild(build.id, partType)} className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-700">
-                                                Delete
-                                            </button>
-                                            <button onClick={() => setPartToUpdate({ buildId: build.id, partType })} className="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-700">
-                                                Update
-                                            </button>
-                                        </React.Fragment>
-                                    )
-                                ))}
-                            </div>
-                        )}
-                    </div>
-                ))}
+                {customBuilds.length === 0 ? (
+                    <p>You don't have any Builds. Get to building!</p>
+                ) : (
+                    customBuilds.map((build) => (
+                        <div key={build.id} className="mb-4">
+                            <h3
+                                onClick={() => toggleBuildDetails(build.id)}
+                                className="text-xl font-semibold cursor-pointer text-blue-500"
+                            >
+                                {build.name}
+                            </h3>
+                            {selectedBuildId === build.id && (
+                                <div className="grid grid-cols-3 gap-4 items-center">
+                                    <div className="font-bold">Part</div>
+                                    <div className="font-bold">Delete</div>
+                                    <div className="font-bold">Update</div>
+                                    {Object.entries(build).map(([partType, partName]) => (
+                                        partType !== 'id' && partType !== 'name' && partType !== 'total_price' && partName && (
+                                            <React.Fragment key={partType}>
+                                                <div>{partType}: {partName}</div>
+                                                <button onClick={() => deletePartFromBuild(build.id, partType)} className="px-2 py-1 bg-red-500 text-white rounded hover:bg-red-700">
+                                                    Delete
+                                                </button>
+                                                <button onClick={() => setPartToUpdate({ buildId: build.id, partType })} className="px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-700">
+                                                    Update
+                                                </button>
+                                            </React.Fragment>
+                                        )
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    ))
+                )}
             </section>
             {partToUpdate && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-                    <div className="bg-white p-4 rounded">
+                    <div className="bg-white p-4 rounded text-black">
                         <div className="flex justify-between items-center mb-4">
                             <h2 className="text-xl font-semibold">Update {partToUpdate.partType}</h2>
                             <button onClick={() => setPartToUpdate(null)} className="text-2xl">&times;</button>
